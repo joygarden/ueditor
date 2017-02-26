@@ -25,6 +25,7 @@ public final class ConfigManager {
 	private final String rootPath;
 	private final String originalPath;
 	private final String contextPath;
+	private final String basePath;
 	private static final String configFileName = "config.json";
 	private String parentPath = null;
 	private JSONObject jsonConfig = null;
@@ -36,12 +37,13 @@ public final class ConfigManager {
 	/*
 	 * 通过一个给定的路径构建一个配置管理器， 该管理器要求地址路径所在目录下必须存在config.properties文件
 	 */
-	private ConfigManager ( String rootPath, String contextPath, String uri ) throws FileNotFoundException, IOException {
+	private ConfigManager ( String rootPath, String contextPath, String uri, String basePath ) throws FileNotFoundException, IOException {
 		
 		rootPath = rootPath.replace( "\\", "/" );
 		
 		this.rootPath = rootPath;
 		this.contextPath = contextPath;
+		this.basePath = basePath;
 		
 		if ( contextPath.length() > 0 ) {
 			this.originalPath = this.rootPath + uri.substring( contextPath.length() );
@@ -60,10 +62,10 @@ public final class ConfigManager {
 	 * @param uri 当前访问的uri
 	 * @return 配置管理器实例或者null
 	 */
-	public static ConfigManager getInstance ( String rootPath, String contextPath, String uri ) {
+	public static ConfigManager getInstance ( String rootPath, String contextPath, String uri,String basePath ) {
 		
 		try {
-			return new ConfigManager(rootPath, contextPath, uri);
+			return new ConfigManager(rootPath, contextPath, uri,basePath);
 		} catch ( Exception e ) {
 			return null;
 		}
@@ -163,6 +165,7 @@ public final class ConfigManager {
 		
 		try{
 			JSONObject jsonConfig = new JSONObject( configContent );
+            jsonConfig.put("imageUrlPrefix",basePath);
 			this.jsonConfig = jsonConfig;
 		} catch ( Exception e ) {
 			this.jsonConfig = null;

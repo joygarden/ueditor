@@ -24,12 +24,19 @@ public class ActionEnter {
 	private ConfigManager configManager = null;
 
 	public ActionEnter ( HttpServletRequest request, String rootPath ) {
-		
+        //设置访问根路径
+        StringBuilder basePath = new StringBuilder();
+        basePath.append(request.getScheme()).append("://").append(request.getServerName());
+        if (request.getServerPort() != 80) {
+            basePath.append(":").append(request.getServerPort());
+        }
+        basePath.append(request.getContextPath());
+
 		this.request = request;
 		this.rootPath = rootPath;
 		this.actionType = request.getParameter( "action" );
 		this.contextPath = request.getContextPath();
-		this.configManager = ConfigManager.getInstance( this.rootPath, this.contextPath, request.getRequestURI() );
+		this.configManager = ConfigManager.getInstance( this.rootPath, this.contextPath, request.getRequestURI(),basePath.toString() );
 		
 	}
 	
